@@ -66,7 +66,10 @@ class DatabaseService {
     const bills = await this.getAllBills();
     return bills
       .filter(b => b.userId === userId)
-      .sort((a, b) => new Date(b.billDate).getTime() - new Date(a.billDate).getTime());
+      .sort((a, b) => {
+        // Use string comparison for ISO date periods
+        return b.period.localeCompare(a.period);
+      });
   }
 
   async getBillByPeriod(userId: string, period: string): Promise<ElectricityBill | null> {
@@ -221,7 +224,7 @@ class DatabaseService {
         period: '2025-10',
         savingsKwh: 55, // 435 - 380
         savingsPercentage: 12.6,
-        cashbackAmount: 142.5, // 10% of savings
+        cashbackAmount: 137.5, // 55 kWh * $2.5 per kWh (10-15% tier)
         status: 'approved',
         createdAt: new Date(),
       };

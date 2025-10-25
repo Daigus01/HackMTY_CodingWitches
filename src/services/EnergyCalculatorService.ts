@@ -10,8 +10,10 @@ class EnergyCalculatorService {
   async calculateBaseline(userId: string, currentPeriod: string): Promise<number> {
     const bills = await DatabaseService.getBillsByUserId(userId);
     
-    // Get bills from previous periods (excluding current)
-    const previousBills = bills.filter(bill => bill.period < currentPeriod);
+    // Get bills from previous periods (excluding current) and ensure they're sorted
+    const previousBills = bills
+      .filter(bill => bill.period < currentPeriod)
+      .sort((a, b) => b.period.localeCompare(a.period)); // Sort descending by period
     
     if (previousBills.length === 0) {
       // No history, use a default baseline

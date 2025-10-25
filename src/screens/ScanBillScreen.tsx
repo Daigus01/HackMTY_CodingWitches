@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatabaseService from '../services/DatabaseService';
 import EnergyCalculatorService from '../services/EnergyCalculatorService';
 import {ElectricityBill} from '../models/User';
+import {getCurrentPeriod, isValidPeriod} from '../utils/dateUtils';
 
 export default function ScanBillScreen() {
   const navigation = useNavigation();
@@ -37,8 +38,7 @@ export default function ScanBillScreen() {
     }
 
     // Validate period format (YYYY-MM)
-    const periodRegex = /^\d{4}-(0[1-9]|1[0-2])$/;
-    if (!periodRegex.test(period)) {
+    if (!isValidPeriod(period)) {
       Alert.alert('Error', 'Formato de periodo inválido. Usa YYYY-MM (ej: 2025-10)');
       return;
     }
@@ -101,9 +101,7 @@ export default function ScanBillScreen() {
   };
 
   const fillSampleData = () => {
-    const currentDate = new Date();
-    const currentPeriod = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-    setPeriod(currentPeriod);
+    setPeriod(getCurrentPeriod());
     setConsumption('350');
     setAmount('1050');
   };
